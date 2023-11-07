@@ -1,0 +1,145 @@
+package mypackage1;
+
+import java.sql.*;
+import java.util.*;
+public class ASSIGN8 {
+	public static void main(String args[]) {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+
+			Connection con=DriverManager.getConnection("jdbc:mysql://10.10.15.233:3306/31268_db","te31268","te31268");
+
+			Statement stmt = con.createStatement();
+			Scanner obj = new Scanner(System.in);
+			String ch = "y";
+			int c = 0;
+
+			stmt.executeUpdate("create table groups(group_id int auto_increment, group_name varchar(20) , group_leader varchar(20) , no_of_parts int, school_name varchar(50), primary key(group_id))");
+			System.out.println("table created!!");
+			while (ch != "n") {
+				System.out.println("--------------------MENU---------------------");
+				System.out.println("1. Insert record");
+				System.out.println("2. Update record");
+				System.out.println("3. Delete record");
+				System.out.println("4. Show table");
+				System.out.println("Enter your choice: ");
+				c = obj.nextInt();
+				switch (c) {
+				case 1:
+
+					String name = new String("");
+					String leader = new String("");
+					System.out.println("Enter Group Name: ");
+					name = obj.next();
+					System.out.println("Enter leader name: ");
+					leader = obj.next();
+					System.out.println("Enter no. of students: ");
+					int cno = 0;
+					cno = obj.nextInt();
+					System.out.println("Enter School name: ");
+					String schname = new String("");
+					schname = obj.next();
+					
+
+					String sql = "INSERT INTO groups(group_name , group_leader , no_of_parts, school_name)"
+							+ "VALUES (?, ?, ?, ?)";
+					PreparedStatement pstmt = con.prepareStatement(sql);
+					pstmt.setString(1, name);
+					pstmt.setString(2, leader);
+					pstmt.setInt(3, cno);
+					pstmt.setString(4, schname);
+					pstmt.executeUpdate();
+
+					System.out.println("Record Inserted!!");
+					break;
+				case 2:
+
+					int id = 0;
+					System.out.println("Enter Group ID: ");
+					id = obj.nextInt();
+					String name1 = new String("");
+					System.out.println("Enter new Name: ");
+					name1 = obj.next();
+					String leader1 = new String("");
+					System.out.println("Enter new Leader Name: ");
+					leader1 = obj.next();
+					int cno1 = 0;
+					System.out.println("Enter new no. of participants: ");
+					cno1 = obj.nextInt();
+					System.out.println("Enter new School name: ");
+					String schname1 = new String("");
+					schname1 = obj.next();
+					
+
+					sql = "UPDATE groups SET group_name = ? , group_leader = ? , no_of_parts = ? , school_name = ?  WHERE group_id = ?";
+
+					PreparedStatement pstmt1 = con.prepareStatement(sql);
+					pstmt1.setInt(5, id);
+					pstmt1.setString(1, name1);
+					pstmt1.setString(2, leader1);
+					pstmt1.setInt(3, cno1);
+					pstmt1.setString(4, schname1);
+					pstmt1.executeUpdate();
+
+					System.out.println("Record Updated!!");
+					break;
+				case 3:
+					int id1 = 0;
+					System.out.println("Enter Group ID: ");
+					id1 = obj.nextInt();
+
+					sql = "DELETE FROM groups WHERE group_id = ?";
+					PreparedStatement pstmt2 = con.prepareStatement(sql);
+					pstmt2.setInt(1, id1);
+
+					pstmt2.executeUpdate();
+
+					System.out.println("Record Deleted!!");
+					break;
+				case 4:
+					ResultSet r = stmt.executeQuery("select * from groups");
+					while (r.next()) {
+						System.out.println(r.getInt(1) + "\t" + r.getString(2) + "\t" + r.getString(3) + "\t"
+								+ r.getInt(4) + r.getString(5));
+					}
+					break;
+				default:
+					System.out.println("Enter Valid choice!!!\n");
+
+				}
+
+				System.out.println("Do you want to continue(y/n): ");
+				ch = obj.next();
+
+			}
+
+		} catch (ClassNotFoundException | SQLException e) {
+			System.out.println(e);
+		}
+
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

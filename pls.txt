@@ -1,0 +1,17 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `BookFine`(IN rollno INT, IN bname varchar(20), IN curr_date DATE)
+begin
+declare diff int;
+declare i_date DATE;
+declare exit handler for not found select 'No record!' as 'Error';
+select DoI into i_date from borrower where roll_no = rollno and book_name = bname;
+select datediff(curr_date, i_date) into diff;
+if diff between 15 and 30 then
+insert into fine values(rollno, curr_date, (diff*5));
+elseif (diff>30) then
+insert into fine values(rollno, curr_date, (diff*50));
+else
+insert into fine values(rollno, curr_date, 0);
+end if;
+update borrower set status = 'R' where roll_no = rollno and book_name = bname;
+end
+

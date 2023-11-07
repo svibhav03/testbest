@@ -1,0 +1,20 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `addmer`()
+begin
+declare emp_id2 int;
+declare exit_loop boolean;
+
+declare c1 cursor for select empID from O_emp where empID > 0;
+declare continue handler for not found set exit_loop = true;
+
+open c1;
+emp_loop: LOOP
+fetch c1 into emp_id2;
+if not exists (select * from N_emp where empID = emp_id2) then
+insert into N_emp select * from O_emp where empID = emp_id2;
+end if;
+if exit_loop then
+close c1;
+leave emp_loop;
+end if;
+end loop;
+end

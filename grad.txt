@@ -1,0 +1,36 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_Grade`(IN roll INT)
+begin
+declare pname varchar(20);
+declare pmarks int;
+declare pgrade varchar(20);
+declare exit handler for not found select 'No such record' as 'Error';
+select sname, marks into pname, pmarks from stud_marks where rollno = roll;
+if pmarks >= 990 then
+set pgrade = 'Distinction';
+elseif pmarks >= 900 then
+set pgrade = 'First Class';
+elseif pmarks >= 825 then
+set pgrade = 'Higher second class';
+else 
+set pgrade = 'PASS';
+end if;
+
+insert into grade values(roll, pname, pmarks, pgrade);
+end
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `func_Grade`(marks INT) RETURNS varchar(20) CHARSET utf8mb4
+    DETERMINISTIC
+BEGIN
+
+declare fgrade varchar(20);
+if marks >= 990 then
+set fgrade = 'Distinction';
+elseif marks >= 900 then
+set fgrade = 'First Class';
+else 
+set fgrade = 'PASS';
+end if;
+
+return fgrade;
+
+end
